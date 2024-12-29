@@ -7,6 +7,7 @@ import com.example.musinsa.pricingSystem.apiSystem.entity.Product;
 import com.example.musinsa.pricingSystem.apiSystem.repository.BrandRepository;
 import com.example.musinsa.pricingSystem.apiSystem.repository.CategoryRepository;
 import com.example.musinsa.pricingSystem.apiSystem.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    // 상품 추가
+    @Transactional
     public ResponseEntity<Map<String, Object>> addProduct(ProductDto dto) {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -64,7 +65,7 @@ public class ProductService {
         }
     }
 
-    // 상품 업데이트
+    @Transactional
     public void updateProduct(Long productId, ProductDto dto) {
         Map<String, Object> response = new HashMap<>();
         try {
