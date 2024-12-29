@@ -14,4 +14,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.category.categoryId = :categoryId AND p.brand.brandId = :brandId ORDER BY p.price ASC")
     List<Product> findLowestPriceProductByCategoryAndBrand(@Param("categoryId") Long categoryId, @Param("brandId") Long brandId);
 
+    @Query("SELECT p FROM Product p WHERE p.category.categoryId = :categoryId ORDER BY p.price ASC")
+    List<Product> findLowestPriceProductByCategory(@Param("categoryId") Long categoryId);
+
 }

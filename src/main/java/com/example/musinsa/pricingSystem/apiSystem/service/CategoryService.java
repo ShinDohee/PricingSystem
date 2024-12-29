@@ -22,7 +22,7 @@ public class CategoryService {
     private ProductRepository productRepository;
 
     // 카테고리 이름으로 최저, 최고 가격 브랜드와 상품 조회
-    @Transactional
+
     public Map<String, Object> getPriceRangeByCategory(CategoryDto categoryDto) {
         // 카테고리명으로 카테고리 ID 조회
         Category category = categoryRepository.findByCategoryName(categoryDto.getCategoryname());
@@ -63,5 +63,46 @@ public class CategoryService {
         response.put("최고가", maxPriceList);
 
         return response;
+    }
+
+    @Transactional
+    public Map<String, Object> getCategoryLowestPriceDetails() {
+        try {
+            // Step 1: 모든 카테고리 조회
+            List<Category> categories = categoryRepository.findAll();
+
+            // Step 2: 카테고리별 최저가 상품과 브랜드 조회
+            List<Map<String, String>> categoryDetails = new ArrayList<>();
+            int totalPrice = 0;
+
+            for (Category category : categories) {
+                List<Product> products = productRepository.findLowestPriceProductByCategory(category.getCategoryId());
+                if (!products.isEmpty()) {
+                    Product lowestPriceProduct = products.get(0); // 최저가 상품
+                    totalPrice += lowestPriceProduct.getPrice();
+
+                    categoryDetails.add(Map.of(
+                            "카테고리", category.getCategoryName(),
+                            "브랜드", lowestPriceProduct.getBrand().getBrandName(),
+                            "가격", String.format("%,d", lowestPriceProduct.getPrice())
+                    ));
+                }
+            }
+
+            // Step 3: 결과 JSON 생성
+            Map<String, Object> response = new HashMap<>();
+            response.put("카테고리", categoryDetails);
+            response.put("총액", String.format("%,d", totalPrice));
+
+            return response;
+
+        } catch (Exception e) {
+            // 실패 시 오류 메시지 포함
+            return Map.of(
+                    "status", "error",
+                    "message", "Failed to retrieve category price details",
+                    "reason", e.getMessage()
+            );
+        }
     }
 }
