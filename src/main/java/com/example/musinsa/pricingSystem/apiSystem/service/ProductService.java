@@ -31,11 +31,11 @@ public class ProductService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public Product getProduct(@PathVariable Long id){
+    public Product getProduct(@PathVariable Long id) {
         return productRepository.findById(id).orElseThrow();
     }
 
-    public List<Product> getProducts(){
+    public List<Product> getProducts() {
         return productRepository.findAll();
     }
 
@@ -71,19 +71,19 @@ public class ProductService {
         try {
             Product product = productRepository.findById(productId)
                     .orElseThrow(() -> new RuntimeException("Product not found"));
-            if(dto.getBrandId() != null) {
+            if (dto.getBrandId() != null) {
                 Brand brand = brandRepository.findById(dto.getBrandId())
                         .orElseThrow(() -> new RuntimeException("Brand not found"));
                 product.setBrand(brand);
             }
-            if(dto.getCategoryId() != null) {
+            if (dto.getCategoryId() != null) {
                 Category category = categoryRepository.findById(dto.getCategoryId())
                         .orElseThrow(() -> new RuntimeException("Category not found"));
                 product.setCategory(category);
             }
-           if(dto.getPrice() != null) {
-               product.setPrice(dto.getPrice());
-           }
+            if (dto.getPrice() != null) {
+                product.setPrice(dto.getPrice());
+            }
 
             productRepository.save(product);
 
@@ -96,6 +96,7 @@ public class ProductService {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
     // 상품 삭제
     public ResponseEntity<Map<String, Object>> deleteProduct(Long productId) {
         Map<String, Object> response = new HashMap<>();

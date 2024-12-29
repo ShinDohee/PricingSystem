@@ -3,7 +3,7 @@ package com.example.musinsa.pricingSystem.apiSystem.controller;
 import com.example.musinsa.pricingSystem.apiSystem.dto.ProductDto;
 import com.example.musinsa.pricingSystem.apiSystem.entity.Product;
 import com.example.musinsa.pricingSystem.apiSystem.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import java.util.Map;
 @RequestMapping("/api/product")
 public class ProductController {
 
-    @Autowired
+    @Resource( name = "productService")
     private ProductService productService;
 
     @PostMapping("/all")

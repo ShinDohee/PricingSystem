@@ -14,7 +14,7 @@ import org.hibernate.annotations.OnDeleteAction;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto Increment 설정
-    @Column(name = "ID", nullable = false, updatable = false)
+    @Column(name = "ID", nullable = false)
     private Long id;
 
     @NotNull
