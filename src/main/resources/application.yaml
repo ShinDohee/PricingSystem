@@ -1,17 +1,23 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testdb  # H2 데이터베이스 URL
     driver-class-name: org.h2.Driver
     username: sa
     password: password
+    hikari:
+      auto-commit: false  # auto-commit을 비활성화
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
   h2:
     console:
       enabled: true
       path: /h2-console
+  sql:
+    init:
+      data-locations: classpath:data.sql
+      mode: always
 springdoc:
   swagger-ui:
     path: /api-docs
