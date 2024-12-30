@@ -1,5 +1,6 @@
 package com.example.musinsa.pricingSystem.apiSystem.service;
 
+import com.example.musinsa.pricingSystem.apiSystem.config.PricingSystemException;
 import com.example.musinsa.pricingSystem.apiSystem.dto.BrandDto;
 import com.example.musinsa.pricingSystem.apiSystem.entity.Brand;
 import com.example.musinsa.pricingSystem.apiSystem.entity.Category;
@@ -8,28 +9,31 @@ import com.example.musinsa.pricingSystem.apiSystem.repository.BrandRepository;
 import com.example.musinsa.pricingSystem.apiSystem.repository.CategoryRepository;
 import com.example.musinsa.pricingSystem.apiSystem.repository.ProductRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static com.example.musinsa.pricingSystem.apiSystem.config.PricingSystemException.ExceptionCode.BRAND_NOT_FOUND;
+
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class BrandService {
 
-    @Autowired
-    private BrandRepository brandRepository;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private ProductRepository productRepository;
+    private final BrandRepository brandRepository;
+    private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
     public Brand getBrand(Long id) {
-        return brandRepository.findById(id).orElseThrow();
+        return brandRepository.findById(id).orElseThrow(() -> new PricingSystemException(BRAND_NOT_FOUND));
     }
+
     public List<Brand> getBrands() {
         return brandRepository.findAll();
     }
+
     @Transactional
     public Brand addBrand(BrandDto brandDto) {
         Brand brand = new Brand();
@@ -47,7 +51,8 @@ public class BrandService {
             // Update other fields as needed
             return brandRepository.save(existingBrand);
         } else {
-            throw new RuntimeException("Brand not found with id " + id); // Handle the case where the brand doesn't exist
+            log.error("Brand not found with id: {}", id);
+            throw new PricingSystemException(BRAND_NOT_FOUND);
         }
     }
 
@@ -56,7 +61,8 @@ public class BrandService {
         if (brandRepository.existsById(id)) {
             brandRepository.deleteById(id);
         } else {
-            throw new RuntimeException("Brand not found with id " + id); // Handle the case where the brand doesn't exist
+            log.error("Brand not found with id: {}", id);
+            throw new PricingSystemException(BRAND_NOT_FOUND);
         }
     }
 

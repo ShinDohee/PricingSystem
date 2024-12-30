@@ -18,7 +18,7 @@ public class ProductController {
     @Resource( name = "productService")
     private ProductService productService;
 
-    @PostMapping("/all")
+    @GetMapping("/all")
     public List<Product> getProducts() {
         return productService.getProducts();
     }

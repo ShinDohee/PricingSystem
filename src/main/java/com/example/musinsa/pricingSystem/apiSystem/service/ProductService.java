@@ -1,5 +1,6 @@
 package com.example.musinsa.pricingSystem.apiSystem.service;
 
+import com.example.musinsa.pricingSystem.apiSystem.config.PricingSystemException;
 import com.example.musinsa.pricingSystem.apiSystem.dto.ProductDto;
 import com.example.musinsa.pricingSystem.apiSystem.entity.Brand;
 import com.example.musinsa.pricingSystem.apiSystem.entity.Category;
@@ -8,7 +9,7 @@ import com.example.musinsa.pricingSystem.apiSystem.repository.BrandRepository;
 import com.example.musinsa.pricingSystem.apiSystem.repository.CategoryRepository;
 import com.example.musinsa.pricingSystem.apiSystem.repository.ProductRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,21 +19,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.musinsa.pricingSystem.apiSystem.config.PricingSystemException.ExceptionCode.*;
 
+
+@RequiredArgsConstructor
 @Service
 public class ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-    @Autowired
-    private BrandRepository brandRepository;
+    private final BrandRepository brandRepository;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     public Product getProduct(@PathVariable Long id) {
-        return productRepository.findById(id).orElseThrow();
+        return productRepository.findById(id).orElseThrow(() -> new PricingSystemException(PRODUCT_NOT_FOUND));
     }
 
     public List<Product> getProducts() {
@@ -44,9 +45,9 @@ public class ProductService {
         Map<String, Object> response = new HashMap<>();
         try {
             Brand brand = brandRepository.findById(dto.getBrandId())
-                    .orElseThrow(() -> new RuntimeException("Brand not found"));
+                    .orElseThrow(() -> new PricingSystemException(BRAND_NOT_FOUND));
             Category category = categoryRepository.findById(dto.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found"));
+                    .orElseThrow(() -> new PricingSystemException(CATEGORY_NOT_FOUND));
 
             Product product = new Product();
             product.setBrand(brand);
@@ -70,15 +71,15 @@ public class ProductService {
         Map<String, Object> response = new HashMap<>();
         try {
             Product product = productRepository.findById(productId)
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
+                    .orElseThrow(() -> new PricingSystemException(PRODUCT_NOT_FOUND));
             if (dto.getBrandId() != null) {
                 Brand brand = brandRepository.findById(dto.getBrandId())
-                        .orElseThrow(() -> new RuntimeException("Brand not found"));
+                        .orElseThrow(() -> new PricingSystemException(BRAND_NOT_FOUND));
                 product.setBrand(brand);
             }
             if (dto.getCategoryId() != null) {
                 Category category = categoryRepository.findById(dto.getCategoryId())
-                        .orElseThrow(() -> new RuntimeException("Category not found"));
+                        .orElseThrow(() -> new PricingSystemException(CATEGORY_NOT_FOUND));
                 product.setCategory(category);
             }
             if (dto.getPrice() != null) {
@@ -102,7 +103,7 @@ public class ProductService {
         Map<String, Object> response = new HashMap<>();
         try {
             Product product = productRepository.findById(productId)
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
+                    .orElseThrow(() -> new PricingSystemException(PRODUCT_NOT_FOUND));
 
             productRepository.delete(product);
 

@@ -1,4 +1,5 @@
 package com.example.musinsa.pricingSystem.apiSystem.service;
+
 import com.example.musinsa.pricingSystem.apiSystem.dto.CategoryDto;
 import com.example.musinsa.pricingSystem.apiSystem.entity.Brand;
 import com.example.musinsa.pricingSystem.apiSystem.entity.Category;
@@ -6,20 +7,19 @@ import com.example.musinsa.pricingSystem.apiSystem.entity.Product;
 import com.example.musinsa.pricingSystem.apiSystem.repository.BrandRepository;
 import com.example.musinsa.pricingSystem.apiSystem.repository.CategoryRepository;
 import com.example.musinsa.pricingSystem.apiSystem.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryService {
-    @Autowired
-    private BrandRepository brandRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private ProductRepository productRepository;
+
+    private final BrandRepository brandRepository;
+    private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
     // 카테고리 이름으로 최저, 최고 가격 브랜드와 상품 조회
 
